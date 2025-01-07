@@ -62,11 +62,11 @@ app.use("/uploads", express.static("uploads"));
 // אם אנחנו בסביבת פרודקשן
 if (process.env.NODE_ENV === "production") {
   // הגשה של קבצים סטטיים מ-build
-  app.use(express.static(path.join(__dirname, "..", "client", "build")));
+  app.use(express.static(path.join(__dirname, "client/build")));
 
   // אם אין נתיב תואם, יש להחזיר את קובץ ה-index.html
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
   });
 }
 
