@@ -60,10 +60,12 @@ app.use("/api/files", fileRoutes); // הפניית בקשות למסלולי ה�
 app.use("/uploads", express.static("uploads"));
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "client/build")));
+  // הגשת תיקיית build כקבצים סטטיים
+  app.use(express.static(path.join(__dirname, "build")));
 
+  // הגשת index.html לכל הבקשות שאינן API
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+    res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 }
 
