@@ -6,6 +6,7 @@ const File = require("../models/File");
 const fs = require("fs");
 
 const uploadDir = path.join(__dirname, "uploads");
+console.log("uploadDirrrr?", uploadDir);
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true }); // יצירת הספרייה אם היא לא קיימת
 }
