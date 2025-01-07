@@ -1,3 +1,4 @@
+//middleware function to authenticate the user
 const jwt = require("jsonwebtoken");
 
 const auth = (req, res, next) => {

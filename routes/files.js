@@ -36,6 +36,7 @@ router.post("/upload", auth, upload.single("file"), async (req, res) => {
       userId: req.userId, // מזהה המשתמש
     });
     await file.save(); // שמירה במסד הנתונים
+    console.log("File saved to DB:", file);
     res.status(201).send(file); // שליחה של תשובת העלאה
   } catch (error) {
     res.status(400).send(error); // טיפול בשגיאות
