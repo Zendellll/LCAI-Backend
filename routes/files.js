@@ -32,29 +32,42 @@ const upload = multer({
 });
 
 // הגדרת מסלול להעלאת קבצים
-router.post("/upload", auth, upload.single("file"), async (req, res) => {
-  try {
-    console.log("Received upload request", req.body); // לוג לקבלת הבקשה
-    console.log("Received upload file", req.file); // לוג לקבלת הבקשה
-    const safeFilename = encodeURIComponent(req.file.originalname); // קידוד שם הקובץ
+router.post(
+  "/upload",
+  auth,
+  upload.single("file"),
+  (req, res, next) => {
+    if (!req.file) {
+      console.log("No file uploaded");
+      return res.status(400).send("No file uploaded");
+    }
+    console.log("File uploaded successfully:", req.file);
+    next();
+  },
+  async (req, res) => {
+    try {
+      console.log("Received upload request", req.body); // לוג לקבלת הבקשה
+      console.log("Received upload file", req.file); // לוג לקבלת הבקשה
+      const safeFilename = encodeURIComponent(req.file.originalname); // קידוד שם הקובץ
 
-    console.log("File upload successful:", req.file);
+      console.log("File upload successful:", req.file);
 
-    const file = new File({
-      filename: req.file.filename, // השם החדש שנשמר בשרת
-      originalName: safeFilename, // שמירת השם המקורי של הקובץ
-      path: req.file.path, // נתיב הקובץ
-      mimetype: req.file.mimetype, // סוג הקובץ
-      size: req.file.size, // גודל הקובץ
-      userId: req.userId, // מזהה המשתמש
-    });
-    await file.save(); // שמירה במסד הנתונים
-    console.log("File saved to DB:", file);
-    res.status(201).send(file); // שליחה של תשובת העלאה
-  } catch (error) {
-    res.status(400).send(error); // טיפול בשגיאות
+      const file = new File({
+        filename: req.file.filename, // השם החדש שנשמר בשרת
+        originalName: safeFilename, // שמירת השם המקורי של הקובץ
+        path: req.file.path, // נתיב הקובץ
+        mimetype: req.file.mimetype, // סוג הקובץ
+        size: req.file.size, // גודל הקובץ
+        userId: req.userId, // מזהה המשתמש
+      });
+      await file.save(); // שמירה במסד הנתונים
+      console.log("File saved to DB:", file);
+      res.status(201).send(file); // שליחה של תשובת העלאה
+    } catch (error) {
+      res.status(400).send(error); // טיפול בשגיאות
+    }
   }
-});
+);
 
 // הגדרת מסלול להצגת קבצים שהעלו המשתמשים
 router.get("/my-files", auth, async (req, res) => {
