@@ -1,0 +1,7 @@
+2024-10-02 10:15:05 INFO Server initialized
+2024-10-02 10:16:25 INFO Request received from user
+2024-10-02 10:17:30 ERROR Failed to load configuration file
+2024-10-02 10:18:45 INFO Session terminated
+2024-10-02 10:20:00 WARNING CPU usage is above 90%
+2024-10-02 10:21:15 ERROR Memory allocation error
+2024-10-02 10:22:30 INFO Server stopped
