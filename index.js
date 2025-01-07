@@ -41,22 +41,12 @@ const connectDB = async () => {
 // הפעלת החיבור ל-MongoDB
 connectDB();
 
-// הגדרות Multer (לטעינת קבצים)
-const storage = multer.diskStorage({
-  destination: "./uploads/",
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
 // Routes (מסלולים)
 const authRoutes = require("./routes/auth");
 const fileRoutes = require("./routes/files");
 
 app.use("/api/auth", authRoutes); // הפניית בקשות למסלולי ההרשמה וההתחברות
 app.use("/api/files", fileRoutes); // הפניית בקשות למסלולי הקבצים
-
-// חשיפת תיקיית uploads למערכת
 app.use("/uploads", express.static("uploads"));
 
 if (process.env.NODE_ENV === "production") {

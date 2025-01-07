@@ -6,10 +6,10 @@ const File = require("../models/File");
 const fs = require("fs");
 
 const uploadDir = path.join(__dirname, "..", "uploads");
-console.log("uploadDiruploadDir", uploadDir);
+console.log("uploadDiruploadDir123", uploadDir);
 // אם התיקייה לא קיימת, צור אותה
 if (!fs.existsSync(uploadDir)) {
-  console.log("Creating uploads directory ==", uploadDir);
+  console.log("Creating uploads directory ==<<<<<", uploadDir);
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
