@@ -50,16 +50,13 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    console.log(
-      'process.env.NODE_ENV === "production"',
-      process.env.NODE_ENV === "production"
-    );
 
     // שמירת ה-token ב-cookie
     res.cookie("authToken", token, {
       httpOnly: true, // לא ניתן לגשת אליו דרך JavaScript
       secure: process.env.NODE_ENV === "production", // true אם ב-production
       maxAge: 3600000, // 1 שעה
+      sameSite: "Strict", // מדיניות של cookie
     });
 
     res.send({ user, token });
@@ -74,6 +71,7 @@ router.post("/logout", (req, res) => {
       httpOnly: true, // אותו דבר כמו בהגדרת ה-cookie
       secure: process.env.NODE_ENV === "production", // אם ב-production
       maxAge: 0, // מנקה את ה-cookie
+      sameSite: "Strict", // מדיניות של cookie
     });
 
     res.status(200).send({ message: "Logged out successfully" });
