@@ -5,6 +5,11 @@ const path = require("path"); // ייבוא מודול path
 const File = require("../models/File");
 const fs = require("fs");
 
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true }); // יצירת הספרייה אם היא לא קיימת
+}
+
 // הגדרת אחסון עם multer
 const storage = multer.diskStorage({
   destination: "./uploads/", // המיקום שבו הקבצים יישמרו

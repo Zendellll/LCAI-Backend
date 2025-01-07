@@ -3,8 +3,6 @@ const jwt = require("jsonwebtoken");
 
 const auth = (req, res, next) => {
   try {
-    console.log("req.cookies", req.cookies);
-
     const token = req.cookies.authToken;
     if (!token) {
       return res.status(401).send({ error: "Please authenticate." });
