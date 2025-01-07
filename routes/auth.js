@@ -50,6 +50,10 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+    console.log(
+      'process.env.NODE_ENV === "production"',
+      process.env.NODE_ENV === "production"
+    );
 
     // שמירת ה-token ב-cookie
     res.cookie("authToken", token, {
