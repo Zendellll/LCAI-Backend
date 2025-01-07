@@ -6,9 +6,10 @@ const File = require("../models/File");
 const fs = require("fs");
 
 const uploadDir = path.join(__dirname, "uploads");
-console.log("uploadDirrrr?", uploadDir);
+
+// אם התיקייה לא קיימת, צור אותה
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true }); // יצירת הספרייה אם היא לא קיימת
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 // הגדרת אחסון עם multer
