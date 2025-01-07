@@ -27,6 +27,9 @@ const upload = multer({
 router.post("/upload", auth, upload.single("file"), async (req, res) => {
   try {
     const safeFilename = encodeURIComponent(req.file.originalname); // קידוד שם הקובץ
+
+    console.log("File upload successful:", req.file);
+
     const file = new File({
       filename: req.file.filename, // השם החדש שנשמר בשרת
       originalName: safeFilename, // שמירת השם המקורי של הקובץ
