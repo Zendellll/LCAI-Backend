@@ -9,6 +9,8 @@ const uploadDir = path.join(__dirname, "uploads");
 
 // אם התיקייה לא קיימת, צור אותה
 if (!fs.existsSync(uploadDir)) {
+  console.log("Creating uploads directory", uploadDir);
+
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
