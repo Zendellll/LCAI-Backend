@@ -13,35 +13,46 @@ const upload = multer({
 });
 
 // הגדרת מסלול להעלאת קבצים
-router.post("/upload", auth, upload.single("file"), async (req, res) => {
-  try {
-    // אם לא הועלה קובץ
+router.post(
+  "/upload",
+  auth,
+  (req, res, next) => {
+    console.log("Auth middleware passed");
+    next();
+  },
+  upload.single("file"),
+  (req, res, next) => {
+    console.log("Multer middleware passed");
     if (!req.file) {
+      console.log("No file found in request");
       return res.status(400).send("No file uploaded");
     }
+    console.log("File received:", req.file);
+    next();
+  },
+  async (req, res) => {
+    try {
+      console.log("Proceeding with file processing");
 
-    console.log("Received file:", req.file);
+      const safeFilename = encodeURIComponent(req.file.originalname);
+      const file = new File({
+        filename: req.file.originalname,
+        originalName: safeFilename,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        userId: req.userId,
+        data: req.file.buffer,
+      });
 
-    const safeFilename = encodeURIComponent(req.file.originalname);
-
-    // שמירה בקובץ DB בצורה של Buffer
-    const file = new File({
-      filename: req.file.originalname, // השם המקורי
-      originalName: safeFilename, // שמירת שם הקובץ המקורי
-      mimetype: req.file.mimetype, // סוג הקובץ
-      size: req.file.size, // גודל הקובץ
-      userId: req.userId, // מזהה המשתמש
-      data: req.file.buffer, // שמירת תוכן הקובץ כ-buffer
-    });
-
-    await file.save(); // שמירה במסד הנתונים
-    console.log("File saved to DB:", file);
-    res.status(201).send(file); // שליחה של תשובת העלאה
-  } catch (error) {
-    console.error(error);
-    res.status(400).send(error); // טיפול בשגיאות
+      await file.save(); // שמירה במסד הנתונים
+      console.log("File saved to DB:", file);
+      res.status(201).send(file); // שליחה של תשובת העלאה
+    } catch (error) {
+      console.error("Error while saving file:", error);
+      res.status(400).send(error); // טיפול בשגיאות
+    }
   }
-});
+);
 
 // הגדרת מסלול להצגת קבצים שהעלו המשתמשים
 router.get("/my-files", auth, async (req, res) => {
