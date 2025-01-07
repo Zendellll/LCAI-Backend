@@ -60,15 +60,15 @@ app.use("/api/files", fileRoutes); // הפניית בקשות למסלולי ה�
 app.use("/uploads", express.static("uploads"));
 
 // אם אנחנו בסביבת פרודקשן
-if (process.env.NODE_ENV === "production") {
-  // הגשה של קבצים סטטיים מ-build
-  app.use(express.static(path.join(__dirname, "client/build")));
+// if (process.env.NODE_ENV === "production") {
+//   // הגשה של קבצים סטטיים מ-build
+//   app.use(express.static(path.join(__dirname, "client/build")));
 
-  // אם אין נתיב תואם, יש להחזיר את קובץ ה-index.html
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
-  });
-}
+//   // אם אין נתיב תואם, יש להחזיר את קובץ ה-index.html
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "client/build", "index.html"));
+//   });
+// }
 
 // שמירת השרת מאזין לפורט הנכון
 const PORT = process.env.PORT || 5001;
