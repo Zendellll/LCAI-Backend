@@ -5,7 +5,7 @@ const path = require("path"); // ייבוא מודול path
 const File = require("../models/File");
 const fs = require("fs");
 
-const uploadDir = path.join(__dirname, "uploads");
+const uploadDir = path.join(__dirname, "..", "uploads");
 
 // אם התיקייה לא קיימת, צור אותה
 if (!fs.existsSync(uploadDir)) {
@@ -16,7 +16,7 @@ if (!fs.existsSync(uploadDir)) {
 
 // הגדרת אחסון עם multer
 const storage = multer.diskStorage({
-  destination: "./uploads/", // המיקום שבו הקבצים יישמרו
+  destination: path.join(__dirname, "..", "uploads"), // עדכון הנתיב
   filename: (req, file, cb) => {
     // יצירת שם קובץ ייחודי, שמירה על שם הקובץ המקורי
     const uniqueSuffix = Date.now(); // תוסף ייחודי המבוסס על זמן
