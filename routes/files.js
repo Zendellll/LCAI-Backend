@@ -32,7 +32,8 @@ const upload = multer({
 });
 
 // הגדרת מסלול להעלאת קבצים
-router.post("/upload", auth, upload.single("file"), async (req, res) => {
+// upload.single("file"),
+router.post("/upload", auth, async (req, res) => {
   try {
     console.log("Received upload request", req.body); // לוג לקבלת הבקשה
     console.log("Received upload file", req.file); // לוג לקבלת הבקשה
