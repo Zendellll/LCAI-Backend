@@ -32,12 +32,10 @@ const upload = multer({
 });
 
 // הגדרת מסלול להעלאת קבצים
-// upload.single("file"),
-// auth,
-router.post("/upload", async (req, res) => {
-  console.log("Received upload request", req.body); // לוג לקבלת הבקשה
-  console.log("Received upload file", req.file); // לוג לקבלת הבקשה
+router.post("/upload", auth, upload.single("file"), async (req, res) => {
   try {
+    console.log("Received upload request", req.body); // לוג לקבלת הבקשה
+    console.log("Received upload file", req.file); // לוג לקבלת הבקשה
     const safeFilename = encodeURIComponent(req.file.originalname); // קידוד שם הקובץ
 
     console.log("File upload successful:", req.file);
