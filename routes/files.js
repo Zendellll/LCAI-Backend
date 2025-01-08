@@ -1,100 +1,79 @@
 const router = require("express").Router();
 const auth = require("../middleware/auth");
 const multer = require("multer");
-const path = require("path"); // ייבוא מודול path
+const path = require("path");
 const File = require("../models/File");
 const fs = require("fs");
 
 const uploadDir = path.join(__dirname, "..", "uploads");
-console.log("uploadDiruploadDir123", uploadDir);
-// אם התיקייה לא קיימת, צור אותה
 if (!fs.existsSync(uploadDir)) {
-  console.log("Creating uploads directory ==<<<<<", uploadDir);
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 // הגדרת אחסון עם multer
 const storage = multer.diskStorage({
-  destination: uploadDir, // עדכון הנתיב
+  destination: uploadDir,
   filename: (req, file, cb) => {
-    // יצירת שם קובץ ייחודי, שמירה על שם הקובץ המקורי
-    const uniqueSuffix = Date.now(); // תוסף ייחודי המבוסס על זמן
-    const originalName = file.originalname; // השם המקורי של הקובץ
-    const extension = path.extname(originalName); // סיומת הקובץ
-    const filename = `${originalName}-${uniqueSuffix}`; // יצירת שם ייחודי לקובץ
-    cb(null, filename); // שמירת שם הקובץ עם התוסף הייחודי
+    const originalName = file.originalname;
+    const safeFilename = encodeURIComponent(originalName);
+    cb(null, safeFilename);
   },
 });
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 50 * 1024 * 1024 }, // 100MB
+  limits: { fileSize: 50 * 1024 * 1024 },
 });
 
-// הגדרת מסלול להעלאת קבצים
 router.post("/upload", auth, upload.single("file"), async (req, res) => {
   try {
-    console.log("Received upload request", req.body); // לוג לקבלת הבקשה
-    console.log("Received upload file", req.file); // לוג לקבלת הבקשה
-    const safeFilename = encodeURIComponent(req.file.originalname); // קידוד שם הקובץ
-
-    console.log("File upload successful:", req.file);
-
     const file = new File({
-      filename: req.file.filename, // השם החדש שנשמר בשרת
-      originalName: safeFilename, // שמירת השם המקורי של הקובץ
-      path: req.file.path, // נתיב הקובץ
-      mimetype: req.file.mimetype, // סוג הקובץ
-      size: req.file.size, // גודל הקובץ
-      userId: req.userId, // מזהה המשתמש
+      filename: req.file.filename,
+      originalName: req.file.originalname,
+      path: req.file.path,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+      userId: req.userId,
     });
-    await file.save(); // שמירה במסד הנתונים
-    console.log("File saved to DB:", file);
-    res.status(201).send(file); // שליחה של תשובת העלאה
+    await file.save();
+    res.status(201).send(file);
   } catch (error) {
-    res.status(400).send(error); // טיפול בשגיאות
+    res.status(400).send(error);
   }
 });
 
-// הגדרת מסלול להצגת קבצים שהעלו המשתמשים
 router.get("/my-files", auth, async (req, res) => {
   try {
-    console.log("my-filesmy-filesmy-filesmy-filesmy-filesmy-filesmy-files");
-
-    const files = await File.find({ userId: req.userId }); // שליפה לפי מזהה המשתמש
-    res.send(files); // שליחה של רשימת הקבצים
+    const files = await File.find({ userId: req.userId });
+    res.send(files);
   } catch (error) {
-    res.status(500).send(error); // טיפול בשגיאות
+    res.status(500).send(error);
   }
 });
 
-// הגדרת מסלול להורדת קובץ
 router.get("/download/:id", async (req, res) => {
   try {
-    const file = await File.findById(req.params.id); // שליפת הקובץ לפי ה-ID
+    const file = await File.findById(req.params.id);
 
     if (!file) {
-      return res.status(404).send({ message: "File not found" }); // אם הקובץ לא נמצא
+      return res.status(404).send({ message: "File not found" });
     }
 
-    const filePath = path.join(__dirname, "../uploads", file.filename); // יצירת נתיב מלא לקובץ
+    const filePath = path.join(__dirname, "../uploads", file.filename);
 
-    // ודא שהנתיב תקין ושם הקובץ מקודד כראוי
-    const encodedFilename = encodeURIComponent(file.filename); // השתמש בשם המקורי
+    const encodedFilename = decodeURIComponent(file.filename);
 
-    // קובץ יכול להיות קריא, אז נוודא גם שהקובץ קיים
     if (!fs.existsSync(filePath)) {
       return res.status(404).send({ message: "File not found on the server" });
     }
-    // הורדת הקובץ עם שם מקודד
     res.download(filePath, encodedFilename, (err) => {
       if (err) {
-        console.error(err); // הצגת שגיאה אם קיימת
+        console.error(err);
         res.status(500).send({ message: "Could not download the file." });
       }
     });
   } catch (error) {
-    console.error(error); // הצגת שגיאה במקרה של שגיאה כללית
+    console.error(error);
     res.status(500).send({ message: "Internal Server Error" });
   }
 });
