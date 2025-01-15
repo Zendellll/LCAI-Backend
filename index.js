@@ -44,9 +44,11 @@ connectDB();
 // Routes (מסלולים)
 const authRoutes = require("./routes/auth");
 const fileRoutes = require("./routes/files");
+const emailroutes = require("./routes/email");
 
 app.use("/api/auth", authRoutes); // הפניית בקשות למסלולי ההרשמה וההתחברות
 app.use("/api/files", fileRoutes); // הפניית בקשות למסלולי הקבצים
+app.use("/api/email", emailroutes); // הפניית בקשות למסלולי איימל
 app.use("/uploads", express.static("uploads"));
 
 if (process.env.NODE_ENV === "production") {
