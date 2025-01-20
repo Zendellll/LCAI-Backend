@@ -20,7 +20,8 @@ router.post("/send-email", async (req, res) => {
   try {
     await transporter.sendMail({
       from: email,
-      to: process.env.EMAIL_PROVIDER || "amir@lcai.earth",
+      //   to: process.env.EMAIL_PROVIDER || "amir@lcai.earth",
+      to: "amir@lcai.earth",
       subject: subject,
       text: message + "\n\nSent from: " + email,
     });
