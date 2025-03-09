@@ -41,13 +41,13 @@ pool
 // Routes (מסלולים)
 const authRoutes = require("./routes/auth");
 const fileRoutes = require("./routes/files");
-const thankyouRoutes = require("./routes/ty");
+// const thankyouRoutes = require("./routes/ty");
 const emailRoutes = require("./routes/email");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/api/email", emailRoutes);
-app.use("/api/thankyou", thankyouRoutes);
+// app.use("/api/thankyou", thankyouRoutes);
 app.use("/uploads", express.static("uploads"));
 
 if (process.env.NODE_ENV === "production") {
