@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
-const { Pool } = require("pg");
+const pool = require("./db");
 
 require("dotenv").config();
 
@@ -33,14 +33,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  // If you're using SSL (often required on Render's free tier):
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
 
 // 2. Connect to Postgres (not strictly required every time you query,
 //    but doing it once is a good way to verify your credentials)

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // Import the pool from index.js
-const { pool } = require("../index");
+const pool = require("../db");
 
 router.post("/", async (req, res) => {
   try {
