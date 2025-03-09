@@ -6,15 +6,6 @@ const { pool } = require("../index");
 
 router.post("/", async (req, res) => {
   try {
-    const createTableQuery = 'CREATE TABLE IF NOT EXISTS submissions (\n' +
-        '  id SERIAL PRIMARY KEY,\n' +
-        '  name VARCHAR(100) NOT NULL,\n' +
-        '  email VARCHAR(100) NOT NULL,\n' +
-        '  message TEXT NOT NULL,\n' +
-        '  created_at TIMESTAMP DEFAULT NOW()\n' +
-        ');\n'
-    const res = await pool.query(createTableQuery);
-    console.log("Response for table creation - ", res);
     // 1. Extract form data from req.body
     const { name, email, message } = req.body;
 
