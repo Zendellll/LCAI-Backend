@@ -55,12 +55,14 @@ const authRoutes = require("./routes/auth");
 const fileRoutes = require("./routes/files");
 // const thankyouRoutes = require("./routes/ty");
 const emailRoutes = require("./routes/email");
+const getSubmissionsRoute = require("./routes/getSubmissions");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/api/email", emailRoutes);
 // app.use("/api/thankyou", thankyouRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/api/submissions", getSubmissionsRoute);
 
 if (process.env.NODE_ENV === "production") {
   // serving build dir as static files
