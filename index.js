@@ -13,10 +13,22 @@ const cookieParser = require("cookie-parser");
 // Adding cookie-parser to express
 app.use(cookieParser());
 //
+
+const allowedOrigins = [
+  "https://lcai-front.onrender.com",
+  "https://lcai-backend-xmgh.onrender.com"
+];
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL || "http://localhost:3000", // הכתובת של הלקוח בסביבת פרודקשן
-  methods: "GET,POST", // סוגי הבקשות שאתה מאשר
-  credentials: true, // מאפשר לשלוח cookies עם הבקשה
+  origin: (origin, callback) => {
+    // If there's no origin (e.g., mobile apps, curl requests), or if the origin is in the list, allow it
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS Error: Origin ${origin} not allowed.`));
+    }
+  },
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
