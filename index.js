@@ -1,17 +1,18 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
+const { Pool } = require("pg");
+
 require("dotenv").config();
 
 const app = express();
 
 const cookieParser = require("cookie-parser");
 
-// הוספת cookie-parser ל-Express
+// Adding cookie-parser to express
 app.use(cookieParser());
-// הגדרות CORS והבנת JSON
+//
 const corsOptions = {
   origin: process.env.CLIENT_URL || "http://localhost:3000", // הכתובת של הלקוח בסביבת פרודקשן
   methods: "GET,POST", // סוגי הבקשות שאתה מאשר
@@ -21,46 +22,42 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// חיבור ל-MongoDB
-const connectDB = async () => {
-  try {
-    await mongoose.connect(
-      process.env.MONGODB_URI || "mongodb://localhost:27017/LCAI",
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
-    console.log("MongoDB connected...");
-  } catch (err) {
-    console.error(err);
-    process.exit(1); // סיום במקרה של שגיאה בחיבור
-  }
-};
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  // If you're using SSL (often required on Render's free tier):
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 
-// הפעלת החיבור ל-MongoDB
-connectDB();
+// 2. Connect to Postgres (not strictly required every time you query,
+//    but doing it once is a good way to verify your credentials)
+pool
+  .connect()
+  .then(() => console.log("Connected to PostgreSQL!"))
+  .catch((err) => console.error("Connection error", err.stack));
+
 
 // Routes (מסלולים)
 const authRoutes = require("./routes/auth");
 const fileRoutes = require("./routes/files");
-const emailroutes = require("./routes/email");
+const thankyouRoutes = require("./routes/ty");
+const emailRoutes = require("./routes/email");
 
-app.use("/api/auth", authRoutes); // הפניית בקשות למסלולי ההרשמה וההתחברות
-app.use("/api/files", fileRoutes); // הפניית בקשות למסלולי הקבצים
-app.use("/api/email", emailroutes); // הפניית בקשות למסלולי איימל
+app.use("/api/auth", authRoutes);
+app.use("/api/files", fileRoutes);
+app.use("/api/email", emailRoutes);
+app.use("/api/thankyou", thankyouRoutes);
 app.use("/uploads", express.static("uploads"));
 
 if (process.env.NODE_ENV === "production") {
-  // הגשת תיקיית build כקבצים סטטיים
+  // serving build dir as static files
   app.use(express.static(path.join(__dirname, "build")));
 
-  // הגשת index.html לכל הבקשות שאינן API
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 }
 
-// שמירת השרת מאזין לפורט הנכון
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
