@@ -15,7 +15,7 @@ app.use(cookieParser());
 //
 
 const allowedOrigins = [
-  "https://lcai-front.onrender.com",
+  "https://lcai-backend.onrender.com",
   "https://lcai-backend-xmgh.onrender.com"
 ];
 
